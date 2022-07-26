@@ -43,7 +43,7 @@ namespace LottoGame
                         //Beginning of the Menu
                         if (money >= 3 && tempts < 8) //Because we can only bet 8 tempts in the game, no more
                         {
-                            Console.WriteLine("1 - Bet a new fate - 3zł [{0}/8]", tempts + 1);
+                            Console.WriteLine("\n1 - Bet a new fate - 3zł [{0}/8]", tempts + 1);
                         }
                         Console.WriteLine("2 - Check coupon - Drawing");
                         Console.WriteLine("3 = End Game");
@@ -96,7 +96,37 @@ namespace LottoGame
 
         private static int[] BetFate()
         {
-            throw new NotImplementedException();
+            int[] numbers = new int[6];
+            int number = -1;
+            for (int i = 0; i < numbers.Length; i++)
+            {
+                number = -1;
+                Console.Clear();
+                Console.Write("Bet numbers: ");
+                foreach(int n in numbers)
+                {
+                    if (n > 0)
+                    {
+                        Console.WriteLine(n + ", ");
+                    }
+                }
+                Console.WriteLine("\nChoose number from 1 to 49:");
+                Console.Write("{0}/6: ", i + 1);
+                bool correct = int.TryParse(Console.ReadLine(), out number);
+                if(correct && number >=1 && number <= 49 && !numbers.Contains(number))
+                {
+                    numbers[i] = number;
+                }
+                else
+                {
+                    Console.WriteLine("Unfortunately, incorrect number. ");
+                    i--;
+                    Console.ReadKey();
+                }
+
+            }
+            Array.Sort(numbers);
+            return numbers;
         }
 
         private static void DisplayCoupon(List<int[]> coupon)
