@@ -91,9 +91,107 @@ namespace LottoGame
 
         private static int check(List<int[]> coupon)
         {
-            throw new NotImplementedException();
+            int YourWon = 0;
+            int[] drawnNumbers = new int[6];
+            for (int i = 0; i < drawnNumbers.Length; i++)
+            {
+                int tempt = random.Next(1, 50);
+                if(!drawnNumbers.Contains(tempt))
+                {
+                    drawnNumbers[i] = tempt; //If drawnNumbers doesn't contains tempt, then we switch to true to perform if, and add i value to drawnNumbers, otherwise we should subtract i value
+
+                }
+                else
+                {
+                    i--;
+                }
+            }
+            Array.Sort(drawnNumbers); //sort array
+            Console.WriteLine("Drawn numbers:");
+            foreach (int number in drawnNumbers)
+            {
+                Console.Write(number + ", ");
+            }
+            int[] hitNumbers /* trafione */ = checkCoupon(coupon, drawnNumbers);
+            int value = 0;
+            
+
+            Console.WriteLine();
+            if (hitNumbers[0] > 0)
+            {
+                value = hitNumbers[0] * 24;
+                Console.WriteLine("3 hit: {0} + {1} zł", hitNumbers[0], value);
+                YourWon += value;
+            }
+            if (hitNumbers[1] > 0)
+            {
+                value = hitNumbers[1] * random.Next(100, 301); //random value from 100 to 300, value from index one multiplied by value 24
+                Console.WriteLine("4 hit: {0} + {1} zł", hitNumbers[1], value);
+                YourWon += value;
+            }
+            if (hitNumbers[2] > 0)
+            {
+                value = hitNumbers[2] * random.Next(4000, 8001); 
+                Console.WriteLine("5 hit: {0} + {1} zł", hitNumbers[2], value);
+                YourWon += value;
+            }
+            if (hitNumbers[3] > 0)
+            {
+                value = (hitNumbers[3] * Cumulation) / (hitNumbers[3] + random.Next(0, 5));
+                Console.WriteLine("6 hit: {0} + {1} zł", hitNumbers[2], value);
+                YourWon += value;
+            }
+
+            return YourWon;
         }
 
+        private static int[] checkCoupon(List<int[]> coupon, int[] drawnNumbers)
+        {
+            int[] won = new int[4];
+            int i = 0;
+            Console.WriteLine("\n\nYOUR COUPON: ");
+            foreach (int[] fate in coupon)
+            {
+                i++;
+                Console.Write(i + ": ");
+                int howManyHits = 0;
+                foreach (int number in fate)
+                {
+                    if (drawnNumbers.Contains(number))
+                    {
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.Write(number + ", ");
+                        Console.ResetColor();
+                        howManyHits++; //trafien
+                    }
+                    else
+                    {
+                        Console.Write(number + ", ");
+                    }
+
+                }
+                switch(howManyHits)
+                {
+                    case 3:
+                        won[0]++;
+                        break;
+                    case 4:
+                        won[1]++;
+                        break;
+                    case 5:
+                        won[2]++;
+                        break;
+                    case 6:
+                        won[3]++;
+                        break;
+
+                }
+                Console.WriteLine(" -Hit {0}/6", howManyHits);
+            }
+            
+            return won;
+        }
+        
         private static int[] BetFate()
         {
             int[] numbers = new int[6];
@@ -102,7 +200,7 @@ namespace LottoGame
             {
                 number = -1;
                 Console.Clear();
-                Console.Write("Bet numbers: ");
+                Console.Write("Bet numbers: \n");
                 foreach(int n in numbers)
                 {
                     if (n > 0)
@@ -128,7 +226,7 @@ namespace LottoGame
             Array.Sort(numbers);
             return numbers;
         }
-
+        
         private static void DisplayCoupon(List<int[]> coupon)
         {
             if(coupon.Count == 0)
